@@ -1,0 +1,48 @@
+# Dependencies
+node_modules/
+package-lock.json
+
+# Test Results
+test-results/
+playwright-report/
+html-report/
+temp-report/
+allure-results/
+allure-report/
+
+# Generated files
+.features-gen/
+*.log
+
+# Environment files
+.env
+.env.local
+.env.*.local
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+*.tmp
+
+# Excel temp files
+~$*.xlsx
+~$*.xls
+
+# Application specific
+applicationNumber.txt
+
+# Screenshots and videos
+screenshots/
+videos/
+traces/
+
+# Build output
+dist/
+build/

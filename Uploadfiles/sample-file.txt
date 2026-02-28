@@ -1,0 +1,9 @@
+This is a sample file for upload testing.
+Replace this with actual files needed for your upload tests.
+
+Supported file types:
+- PDF (.pdf)
+- Excel (.xlsx, .xls)
+- Word (.docx, .doc)
+- Images (.jpg, .png, .gif)
+- Text (.txt, .csv)
