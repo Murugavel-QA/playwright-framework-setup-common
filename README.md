@@ -7,6 +7,7 @@
 - [Setup and Installation](#setup-and-installation)
 - [Configuration](#configuration)
 - [Quick Start Guide](#quick-start-guide)
+- [MCP Integration](#-mcp-integration-auto-scrape-screen-fields)
 - [Best Practices](#best-practices)
 - [Cloning for New Projects](#cloning-for-new-projects)
 
@@ -20,11 +21,15 @@ This is a **clean, reusable Playwright BDD Test Automation Framework structure**
 - ✅ **BDD with Gherkin**: Ready for human-readable feature files
 - ✅ **Page Object Model**: Structured folders for page objects
 - ✅ **TypeScript**: Pre-configured with type safety
-- ✅ **Excel Data Management**: Built-in Excel reader utility
+- ✅ **Excel Data Management**: Built-in Excel reader utility (`data-utils/excel-data-reader.ts`)
 - ✅ **Allure Reporting**: HTML and Allure reporting configured
 - ✅ **Modular Architecture**: Clean folder structure
 - ✅ **Zero Boilerplate**: Empty folders ready for your code
 - ✅ **Production Ready**: All configurations and dependencies included
+- ✅ **MCP Integration**: `@playwright/mcp` server for AI-assisted browser control
+- ✅ **Auto Page Scanner**: Automatically discovers all screen fields with unique locators
+- ✅ **Interaction Recorder**: Records test runs and exports data-driven JSON for replay
+- ✅ **Locator Strategy**: Smart locator resolution (data-testid → aria → id → role → placeholder → CSS)
 
 ---
 
@@ -276,7 +281,187 @@ The framework includes complete sample implementations:
 
 ---
 
-## 📝 Best Practices
+## 🤖 MCP Integration — Auto-Scrape Screen Fields
+
+### What is MCP?
+
+**Model Context Protocol (MCP)** lets AI assistants (Claude, Copilot, etc.) take control of a
+real Chromium browser via `@playwright/mcp`.  Inside this framework it also powers two utility
+classes that solve two key problems:
+
+| Problem | Solution |
+|---|---|
+| Codegen records static locators that break with new data | **`LocatorStrategyResolver`** — picks the most unique, stable locator at runtime |
+| Codegen can't run the same flow with different inputs | **`McpRecorder`** — captures every interaction as JSON → rerun with any data |
+| Manually finding all fields on 20 screens is slow | **`PageFieldScanner`** — scans every interactive element and generates a POM skeleton |
+
+---
+
+### New files added
+
+| File | Purpose |
+|---|---|
+| `playwright.config.ts` | Main Playwright + BDD configuration |
+| `data-utils/excel-data-reader.ts` | Read test data from Excel `.xlsx` files |
+| `utils/locator-strategy.ts` | `LocatorStrategyResolver` — unique locator priority engine |
+| `utils/page-field-scanner.ts` | `PageFieldScanner` — auto-scan pages → JSON report + POM skeleton |
+| `utils/mcp-recorder.ts` | `McpRecorder` — record interactions → replayable JSON sessions |
+| `fixtures/bdd-fixtures.ts` | BDD fixtures that inject `mcpRecorder` and `fieldScanner` |
+| `.mcp.json` | MCP server configuration for `@playwright/mcp` |
+
+---
+
+### Step 1 — Start the MCP server (AI-assisted mode)
+
+```bash
+npm run mcp
+# or
+npx @playwright/mcp@latest
+```
+
+Once running, connect your AI assistant (e.g. Claude Desktop, GitHub Copilot in VS Code).
+The assistant can then navigate, fill forms, click buttons, and read the DOM — all through
+the MCP protocol.
+
+---
+
+### Step 2 — Auto-scan a screen and generate a Page Object
+
+```typescript
+// tests/scan-my-screen.spec.ts
+import { test } from '@playwright/test';
+import { PageFieldScanner } from '../utils/page-field-scanner';
+
+test('scan login page and generate POM', async ({ page }) => {
+    await page.goto('https://your-app.com/login');
+
+    const scanner = new PageFieldScanner(page);
+    const result  = await scanner.scan();
+
+    // Save the JSON report (shows every field + chosen locator)
+    await scanner.saveScanReport(result, 'test-data/login-scan.json');
+
+    // Auto-generate a TypeScript Page Object skeleton
+    await scanner.generatePageObject(
+        result,
+        'pages/login_homepage/login-page.ts',
+        'LoginPage',
+    );
+});
+```
+
+The generated `login-page.ts` will contain ready-to-use locators for every field on the screen,
+with stable selectors chosen by `LocatorStrategyResolver` in priority order:
+
+1. `data-testid`
+2. `data-test` / `data-qa` / `data-cy`
+3. `aria-label`
+4. Unique `id`
+5. `getByRole` + accessible name
+6. `getByPlaceholder`
+7. Associated `<label>` text
+8. Visible text (buttons/links)
+9. CSS selector (fallback)
+
+---
+
+### Step 3 — Record a test run for data-driven replay
+
+```typescript
+// steps/login-steps.ts
+import { Given, When, Then } from '../fixtures/bdd-fixtures';
+
+Given('I am on the login page', async ({ page }) => {
+    await page.goto('/login');
+});
+
+When('I login with {string} and {string}', async ({ page, mcpRecorder }, email, password) => {
+    await mcpRecorder.recordFill(page.getByLabel('Email'), email);
+    await mcpRecorder.recordFill(page.getByLabel('Password'), password);
+    await mcpRecorder.recordClick(page.getByRole('button', { name: 'Sign In' }));
+});
+
+Then('I should be on the dashboard', async ({ page }) => {
+    await page.waitForURL('**/dashboard');
+});
+```
+
+The `mcpRecorder` fixture auto-saves a JSON file to `test-data/recordings/` after each test.
+
+---
+
+### Step 4 — Data-driven testing with Scenario Outline
+
+Because the recorder separates **locators** from **values**, you can replay the same flow with
+different data sets using Gherkin `Scenario Outline`:
+
+```gherkin
+Feature: Login — data-driven
+
+  Scenario Outline: Login with different user roles
+    Given I am on the login page
+    When I login with "<email>" and "<password>"
+    Then I should be on the dashboard
+
+    Examples:
+      | email                  | password   |
+      | admin@example.com      | Admin@123  |
+      | manager@example.com    | Mgr@456    |
+      | viewer@example.com     | View@789   |
+```
+
+Or load data from Excel:
+
+```typescript
+import { ExcelDataReader } from '../data-utils/excel-data-reader';
+
+const reader = new ExcelDataReader();
+const users  = reader.readSheet<{ email: string; password: string }>(
+    'test-data-excel/users.xlsx',
+    'LoginData',
+);
+```
+
+---
+
+### Locator Strategy — how unique locators are selected
+
+```
+Priority 1 → data-testid="submit-btn"      →  page.getByTestId('submit-btn')
+Priority 2 → data-qa="username"            →  page.locator('[data-qa="username"]')
+Priority 3 → aria-label="Search"           →  page.locator('[aria-label="Search"]')
+Priority 4 → id="email"                    →  page.locator('#email')
+Priority 5 → role=button + name="Login"    →  page.getByRole('button', { name: 'Login' })
+Priority 6 → placeholder="Enter email"     →  page.getByPlaceholder('Enter email')
+Priority 7 → <label for="pwd">Password     →  page.getByLabel('Password')
+Priority 8 → visible text "Submit"         →  page.getByText('Submit', { exact: true })
+Priority 9 → CSS selector (fallback)       →  page.locator('form > div:nth-of-type(2) > input')
+```
+
+The resolver verifies that the chosen locator matches **exactly one element** on the page before
+returning it.  If none are unique, it returns the highest-priority candidate with a warning flag.
+
+---
+
+### MCP + BDD fixtures
+
+Import `Given / When / Then` from `fixtures/bdd-fixtures.ts` instead of `playwright-bdd`
+to get `mcpRecorder` and `fieldScanner` injected automatically:
+
+```typescript
+// steps/my-steps.ts
+import { Given, When, Then } from '../fixtures/bdd-fixtures';
+
+When('I scan the current page', async ({ fieldScanner }) => {
+    const result = await fieldScanner.scan();
+    await fieldScanner.saveScanReport(result, 'test-data/current-page-scan.json');
+    await fieldScanner.generatePageObject(result, 'pages/current-page.ts', 'CurrentPage');
+});
+```
+
+---
+
+
 
 ### Feature Files
 - ✅ Use descriptive feature and scenario names
