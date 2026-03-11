@@ -1,0 +1,26 @@
+{
+  "name": "ai-playwright-automation",
+  "version": "1.0.0",
+  "description": "AI-powered Playwright test generation: requirement → Copilot → 50 test cases",
+  "main": "index.js",
+  "scripts": {
+    "test": "playwright test",
+    "report": "playwright show-report",
+    "generate": "node scripts/generate-tests.js --requirement requirements/login.feature.md"
+  },
+  "keywords": [
+    "playwright",
+    "ai",
+    "copilot",
+    "test-generation",
+    "automation",
+    "typescript"
+  ],
+  "author": "Murugavel-QA",
+  "license": "ISC",
+  "devDependencies": {
+    "@playwright/test": "^1.44.0",
+    "@types/node": "^20.0.0",
+    "typescript": "^5.4.0"
+  }
+}
