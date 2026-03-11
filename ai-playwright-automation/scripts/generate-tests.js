@@ -169,7 +169,7 @@ function main() {
     ' * AUTO-GENERATED STUB – AI Playwright Test Generation',
     ' * =====================================================',
     ' * File    : ' + specName,
-    ' * Source  : ' + path.relative(path.resolve(__dirname, '..'), requirementPath),
+    ' * Source  : ' + path.relative(outputDir, requirementPath),
     ' * Created : ' + new Date().toISOString(),
     ' *',
     ' * HOW TO USE:',

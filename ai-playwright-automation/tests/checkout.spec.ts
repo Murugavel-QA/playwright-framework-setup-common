@@ -2,8 +2,8 @@
  * AUTO-GENERATED STUB – AI Playwright Test Generation
  * =====================================================
  * File    : checkout.spec.ts
- * Source  : requirements/checkout.feature.md
- * Created : 2026-03-11T10:38:55.625Z
+ * Source  : ../requirements/checkout.feature.md
+ * Created : 2026-03-11T10:57:18.243Z
  *
  * HOW TO USE:
  * 1. Open this file in VS Code with GitHub Copilot enabled.

@@ -1,0 +1,9 @@
+{
+  "playwright.reuseBrowser": false,
+  "playwright.showTrace": false,
+  "editor.formatOnSave": true,
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "[typescript]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  }
+}

@@ -2,8 +2,8 @@
  * AUTO-GENERATED STUB – AI Playwright Test Generation
  * =====================================================
  * File    : login.spec.ts
- * Source  : requirements/login.feature.md
- * Created : 2026-03-11T10:37:52.944Z
+ * Source  : ../requirements/login.feature.md
+ * Created : 2026-03-11T10:57:18.218Z
  *
  * HOW TO USE:
  * 1. Open this file in VS Code with GitHub Copilot enabled.
