@@ -1,102 +1,104 @@
-# Enterprise QA Automation Framework Documentation
+# Enterprise QA Automation Framework
 
-## Playwright + TypeScript + Cucumber (BDD) + POM + Excel Data Driven
+## Playwright + TypeScript + Cucumber (BDD) + Excel Data Driven + AI Assisted Testing
 
-**Version:** 3.0
+**Version:** 4.0
 **Audience:** QA Engineers, SDETs, QA Architects
-**Goal:** Scalable automation framework capable of supporting **10,000+ tests**
+**Goal:** Scalable automation platform supporting **10,000+ tests with AI-assisted development**
 
 ---
 
 ## Table of Contents
 
-1. [Introduction](#1-introduction)
-2. [SRS Document Reader (Requirement Intake)](#2-srs-document-reader-requirement-intake)
-3. [Test Case Creation Strategy](#3-test-case-creation-strategy)
+1. [Overview](#1-overview)
+2. [SRS Document Reader](#2-srs-document-reader)
+3. [Test Case Creation](#3-test-case-creation)
 4. [Test Case Catalog](#4-test-case-catalog)
 5. [Traceability Matrix](#5-traceability-matrix)
 6. [Enterprise Framework Architecture](#6-enterprise-framework-architecture)
 7. [Execution Flow (Playwright Lifecycle)](#7-execution-flow-playwright-lifecycle)
 8. [Folder Structure](#8-folder-structure)
-9. [Page Object Model Design](#9-page-object-model-design)
+9. [Page Object Model](#9-page-object-model)
 10. [Component Object Model](#10-component-object-model)
-11. [Excel Data Loader](#11-excel-data-loader)
-12. [Test Data Engine (Auto Inject)](#12-test-data-engine-auto-inject)
+11. [Excel Test Data Loader](#11-excel-test-data-loader)
+12. [Scenario Data Engine](#12-scenario-data-engine)
 13. [BDD Feature Example](#13-bdd-feature-example)
 14. [CI/CD Tag Strategy](#14-cicd-tag-strategy)
 15. [Cross Browser Execution](#15-cross-browser-execution)
-16. [Parallel Execution Strategy](#16-parallel-execution-strategy)
-17. [Retry & Flaky Test Strategy](#17-retry--flaky-test-strategy)
-18. [Smart Locator Strategy](#18-smart-locator-strategy)
-19. [Logging Strategy](#19-logging-strategy)
-20. [Reporting](#20-reporting)
-21. [Test Analytics Strategy](#21-test-analytics-strategy)
-22. [GitHub Actions CI Pipeline](#22-github-actions-ci-pipeline)
-23. [Jenkins Pipeline Example](#23-jenkins-pipeline-example)
-24. [Automation Ownership Model](#24-automation-ownership-model)
-25. [Maintenance Guidelines](#25-maintenance-guidelines)
-26. [Onboarding Guide](#26-onboarding-guide)
-27. [Framework Scaling Strategy (10,000+ Tests)](#27-framework-scaling-strategy-10000-tests)
-28. [Conclusion](#28-conclusion)
+16. [Parallel Execution](#16-parallel-execution)
+17. [Retry & Flaky Test Handling](#17-retry--flaky-test-handling)
+18. [Logging & Reporting](#18-logging--reporting)
+19. [Test Analytics Strategy](#19-test-analytics-strategy)
+20. [GitHub Actions Pipeline](#20-github-actions-pipeline)
+21. [Jenkins Pipeline](#21-jenkins-pipeline)
+22. [Prompt-Based Testing Script Development](#22-prompt-based-testing-script-development)
+23. [MCP-Based Testing Script Development](#23-mcp-based-testing-script-development)
+24. [AI Locator Self-Healing](#24-ai-locator-self-healing)
+25. [Framework Scaling Strategy (10,000+ Tests)](#25-framework-scaling-strategy-10000-tests)
+26. [Automation Ownership Model](#26-automation-ownership-model)
+27. [Maintenance Guidelines](#27-maintenance-guidelines)
+28. [Onboarding Guide](#28-onboarding-guide)
+29. [Conclusion](#29-conclusion)
 
 ---
 
-## 1. Introduction
+## 1. Overview
 
-This document describes a **complete enterprise QA automation framework** including:
+This document defines a **production-grade enterprise automation framework** capable of:
 
-- SRS parsing strategy
-- Automated test case creation model
-- Playwright + Cucumber architecture
-- Excel-driven test data engine
-- Component-based Page Object Model
-- CI/CD pipelines
-- Analytics and governance
-
-The framework is designed for **large-scale automation ecosystems used by enterprise engineering teams**.
-
----
-
-## 2. SRS Document Reader (Requirement Intake)
-
-Enterprise teams convert **SRS → test cases → automation** using structured requirement parsing.
-
-### SRS Input Example
-
-| Requirement ID   | Description                             | Module         | Priority |
-| ---------------- | --------------------------------------- | -------------- | -------- |
-| REQ_LOGIN_001    | User must login using valid credentials | Authentication | High     |
-| REQ_LOGIN_002    | Error shown for invalid password        | Authentication | High     |
-| REQ_CHECKOUT_001 | User can add product to cart            | Checkout       | High     |
-
-### Requirement Parsing Strategy
-
-Steps:
-
-1. Extract functional requirements
-2. Identify business workflows
-3. Map workflows to test scenarios
-4. Assign priority tags
-5. Link requirements to automation tests
+- Reading SRS documents
+- Generating test cases
+- Implementing BDD automation
+- Running scalable Playwright tests
+- Using Excel-based test data
+- Integrating CI/CD pipelines
+- Supporting **AI prompt-based automation**
+- Supporting **MCP-based test development**
 
 ---
 
-## 3. Test Case Creation Strategy
+## 2. SRS Document Reader
 
-Each requirement produces **multiple test scenarios**.
+Automation begins with **requirements ingestion**.
+
+### SRS Example
+
+| Requirement ID   | Description                       | Module         |
+| ---------------- | --------------------------------- | -------------- |
+| REQ_LOGIN_001    | User must login using credentials | Authentication |
+| REQ_CHECKOUT_001 | User can add items to cart        | Checkout       |
+
+### Requirement Processing Flow
+
+```text
+SRS Document
+      |
+      v
+Requirement Parser
+      |
+      v
+Test Scenario Generator
+      |
+      v
+Test Case Repository
+      |
+      v
+Automation Implementation
+```
+
+---
+
+## 3. Test Case Creation
 
 ### Test Case Template
 
-| Field             | Example                     |
-| ----------------- | --------------------------- |
-| Test Case ID      | TC_LOGIN_001                |
-| Requirement ID    | REQ_LOGIN_001               |
-| Module            | Authentication              |
-| Scenario          | Valid Login                 |
-| Preconditions     | User exists                 |
-| Steps             | Enter username & password   |
-| Expected Result   | Dashboard displayed         |
-| Automation Status | Automated                   |
+| Field           | Example                 |
+| --------------- | ----------------------- |
+| Test Case ID    | TC_LOGIN_001            |
+| Requirement     | REQ_LOGIN_001           |
+| Scenario        | Valid Login             |
+| Steps           | Enter username/password |
+| Expected Result | Dashboard displayed     |
 
 ---
 
@@ -104,120 +106,110 @@ Each requirement produces **multiple test scenarios**.
 
 ### Login Module
 
-| Test Case ID | Scenario         | Priority | Tag         |
-| ------------ | ---------------- | -------- | ----------- |
-| TC_LOGIN_001 | Valid login      | High     | @smoke      |
-| TC_LOGIN_002 | Invalid password | High     | @regression |
-| TC_LOGIN_003 | Empty fields     | Medium   | @sanity     |
+| Test Case    | Scenario         | Tag         |
+| ------------ | ---------------- | ----------- |
+| TC_LOGIN_001 | Valid Login      | @smoke      |
+| TC_LOGIN_002 | Invalid Password | @regression |
 
 ### Checkout Module
 
-| Test Case ID    | Scenario                    | Priority | Tag         |
-| --------------- | --------------------------- | -------- | ----------- |
-| TC_CHECKOUT_001 | Add item to cart            | High     | @smoke      |
-| TC_CHECKOUT_002 | Remove item                 | Medium   | @regression |
-| TC_CHECKOUT_003 | Checkout with valid payment | High     | @smoke      |
+| Test Case       | Scenario    | Tag         |
+| --------------- | ----------- | ----------- |
+| TC_CHECKOUT_001 | Add to cart | @smoke      |
+| TC_CHECKOUT_002 | Remove item | @regression |
 
 ### Payment Module
 
-| Test Case ID   | Scenario           | Priority | Tag         |
-| -------------- | ------------------ | -------- | ----------- |
-| TC_PAYMENT_001 | Valid card payment | High     | @smoke      |
-| TC_PAYMENT_002 | Invalid card       | Medium   | @regression |
+| Test Case      | Scenario      | Tag         |
+| -------------- | ------------- | ----------- |
+| TC_PAYMENT_001 | Valid payment | @smoke      |
+| TC_PAYMENT_002 | Invalid card  | @regression |
 
 ---
 
 ## 5. Traceability Matrix
 
-| Requirement      | Test Case       | Feature          |
+| Requirement      | Test Case       | Automation       |
 | ---------------- | --------------- | ---------------- |
 | REQ_LOGIN_001    | TC_LOGIN_001    | login.feature    |
-| REQ_LOGIN_002    | TC_LOGIN_002    | login.feature    |
 | REQ_CHECKOUT_001 | TC_CHECKOUT_001 | checkout.feature |
 
 ---
 
 ## 6. Enterprise Framework Architecture
 
-```
-                 +----------------------+
-                 |  SRS / Requirements  |
-                 +----------+-----------+
-                            |
-                            v
-                 +----------------------+
-                 |   Test Case Design   |
-                 +----------+-----------+
-                            |
-                            v
-                  +---------------------+
-                  |  BDD Feature Files  |
-                  +----------+----------+
-                             |
-                             v
-                  +---------------------+
-                  |  Step Definitions   |
-                  +----------+----------+
-                             |
-                             v
-                  +---------------------+
-                  |  Page Objects       |
-                  +----------+----------+
-                             |
-                             v
-                  +---------------------+
-                  |  Core Framework     |
-                  |  Utilities          |
-                  +----------+----------+
-                             |
-                             v
-                  +---------------------+
-                  |  Playwright Engine  |
-                  +---------------------+
+```text
+                +--------------------+
+                |  SRS Documents     |
+                +---------+----------+
+                          |
+                          v
+                +--------------------+
+                | Test Case Design   |
+                +---------+----------+
+                          |
+                          v
+                +--------------------+
+                | BDD Feature Files  |
+                +---------+----------+
+                          |
+                          v
+                +--------------------+
+                | Step Definitions   |
+                +---------+----------+
+                          |
+                          v
+                +--------------------+
+                | Page Objects       |
+                +---------+----------+
+                          |
+                          v
+                +--------------------+
+                | Framework Core     |
+                +---------+----------+
+                          |
+                          v
+                +--------------------+
+                | Playwright Engine  |
+                +--------------------+
 ```
 
 ---
 
 ## 7. Execution Flow (Playwright Lifecycle)
 
-```
-Test Start
-   |
+```text
+Test Execution Start
+        |
 Load Environment Config
-   |
+        |
 Launch Browser
-   |
+        |
 Before Hooks
-   |
-Load Scenario Test Data
-   |
-Execute Step Definitions
-   |
-Call Page Object Methods
-   |
-Perform UI Actions
-   |
+        |
+Load Test Data
+        |
+Execute Steps
+        |
+Page Object Actions
+        |
 Assertions
-   |
+        |
 After Hooks
-   |
-Capture Screenshot
-   |
-Generate Reports
-   |
-Publish CI Results
+        |
+Report Generation
 ```
 
 ---
 
 ## 8. Folder Structure
 
-```
+```text
 automation-framework
 │
 ├── features
 │   ├── login.feature
-│   ├── checkout.feature
+│   └── checkout.feature
 │
 ├── src
 │   ├── pages
@@ -225,51 +217,42 @@ automation-framework
 │   │   └── checkoutPage.ts
 │
 │   ├── components
-│   │   ├── headerComponent.ts
+│   │   └── headerComponent.ts
 │
 │   ├── step-definitions
-│   │   ├── loginSteps.ts
+│   │   └── loginSteps.ts
 │
 │   ├── hooks
-│   │   ├── beforeHooks.ts
+│   │   └── beforeHooks.ts
 │
 │   ├── data
 │   │   ├── excelLoader.ts
-│   │   ├── scenarioDataEngine.ts
+│   │   └── scenarioDataEngine.ts
 │
-│   ├── utils
-│   │   ├── logger.ts
+│   ├── ai
+│   │   ├── promptTestGenerator.ts
+│   │   └── mcpTestAgent.ts
 │
-│   └── analytics
-│       ├── metricsCollector.ts
-│
-├── test-data
-│   └── testData.xlsx
-│
-├── reports
-├── pipelines
-│   └── github-actions.yml
-│
-└── playwright.config.ts
+│   └── utils
+│       └── logger.ts
 ```
 
 ---
 
-## 9. Page Object Model Design
+## 9. Page Object Model
 
-Example page object:
+Example:
 
 ```ts
+import { Page } from '@playwright/test';
+
 export class LoginPage {
 
-  constructor(private page) {}
+  constructor(private page: Page) {}
 
-  username = this.page.locator('#username');
-  password = this.page.locator('#password');
-
-  async login(user, pass) {
-    await this.username.fill(user);
-    await this.password.fill(pass);
+  async login(username: string, password: string): Promise<void> {
+    await this.page.fill('#username', username);
+    await this.page.fill('#password', password);
     await this.page.click('#login');
   }
 
@@ -280,19 +263,17 @@ export class LoginPage {
 
 ## 10. Component Object Model
 
-Reusable components shared across pages.
-
-Example:
+Reusable UI components:
 
 ```ts
+import { Page } from '@playwright/test';
+
 export class HeaderComponent {
 
-  constructor(private page) {}
+  constructor(private page: Page) {}
 
-  searchBox = this.page.locator('#search');
-
-  async searchProduct(product) {
-    await this.searchBox.fill(product);
+  async search(product: string): Promise<void> {
+    await this.page.fill('#search', product);
     await this.page.keyboard.press('Enter');
   }
 
@@ -301,43 +282,37 @@ export class HeaderComponent {
 
 ---
 
-## 11. Excel Data Loader
+## 11. Excel Test Data Loader
 
-Excel file structure:
+Excel structure:
 
-| ScenarioID  | Username | Password | Product |
-| ----------- | -------- | -------- | ------- |
-| LOGIN_01    | user1    | pass1    |         |
-| LOGIN_02    | user2    | pass2    |         |
-| CHECKOUT_01 | user1    | pass1    | iPhone  |
+| ScenarioID | Username | Password |
+| ---------- | -------- | -------- |
+| LOGIN_01   | user1    | pass1    |
 
-### Excel Loader
+Loader:
 
 ```ts
 import * as XLSX from 'xlsx';
 
-export function loadExcelData(sheet) {
-
-  const workbook = XLSX.readFile('./test-data/testData.xlsx');
-  const worksheet = workbook.Sheets[sheet];
-
-  return XLSX.utils.sheet_to_json(worksheet);
-
+export function loadExcel(sheet: string): any[] {
+  const wb = XLSX.readFile('./test-data/testData.xlsx');
+  return XLSX.utils.sheet_to_json(wb.Sheets[sheet]);
 }
 ```
 
 ---
 
-## 12. Test Data Engine (Auto Inject)
+## 12. Scenario Data Engine
 
-Scenario data automatically loads before test execution.
+Auto-injects test data before each scenario:
 
 ```ts
 Before(async function (scenario) {
 
-  const scenarioId = scenario.pickle.name.split("-")[0];
+  const id = scenario.pickle.name.split("-")[0];
 
-  const data = engine.getData(scenarioId);
+  const data = engine.getData(id);
 
   this.testData = data;
 
@@ -355,21 +330,21 @@ Feature: Login
 Scenario: LOGIN_01 - Valid Login
   Given user navigates to login page
   When user logs in
-  Then dashboard should appear
+  Then dashboard appears
 ```
 
 ---
 
 ## 14. CI/CD Tag Strategy
 
-| Tag         | Purpose        |
-| ----------- | -------------- |
-| @smoke      | critical tests |
-| @sanity     | quick checks   |
-| @regression | full suite     |
-| @flaky      | unstable tests |
+| Tag         | Usage         |
+| ----------- | ------------- |
+| @smoke      | PR validation |
+| @sanity     | nightly runs  |
+| @regression | full suite    |
+| @flaky      | unstable      |
 
-Execution example:
+Execution:
 
 ```bash
 npx cucumber-js --tags "@smoke"
@@ -378,14 +353,6 @@ npx cucumber-js --tags "@smoke"
 ---
 
 ## 15. Cross Browser Execution
-
-Supported browsers:
-
-- Chromium
-- Firefox
-- WebKit
-
-Playwright config:
 
 ```ts
 projects: [
@@ -397,13 +364,13 @@ projects: [
 
 ---
 
-## 16. Parallel Execution Strategy
+## 16. Parallel Execution
 
 ```ts
 workers: 6
 ```
 
-CI nodes can shard tests:
+Test sharding:
 
 ```bash
 npx playwright test --shard=1/3
@@ -411,9 +378,7 @@ npx playwright test --shard=1/3
 
 ---
 
-## 17. Retry & Flaky Test Strategy
-
-Retries configured:
+## 17. Retry & Flaky Test Handling
 
 ```ts
 retries: 2
@@ -425,66 +390,26 @@ Flaky tests tagged:
 @flaky
 ```
 
-CI pipeline can exclude flaky tests.
-
 ---
 
-## 18. Smart Locator Strategy
+## 18. Logging & Reporting
 
-Locator priority:
-
-1. `data-testid`
-2. Accessibility role
-3. `id`
-4. CSS
-5. XPath
-
-Example:
-
-```ts
-page.getByTestId("login-button")
-```
-
----
-
-## 19. Logging Strategy
-
-Centralized logger.
-
-Example:
-
-```
-INFO  Login started
-ERROR Login failed
-DEBUG Data loaded from Excel
-```
-
-Libraries:
+Logging libraries:
 
 - [winston](https://github.com/winstonjs/winston)
 - [pino](https://github.com/pinojs/pino)
 
----
+Reports generated:
 
-## 20. Reporting
-
-Framework generates:
-
-- HTML reports
-- Allure reports
+- HTML
+- Allure
 - Cucumber reports
 
-Reports include:
-
-- Step logs
-- Screenshots
-- Execution time
-
 ---
 
-## 21. Test Analytics Strategy
+## 19. Test Analytics Strategy
 
-Automation metrics tracked:
+Metrics tracked:
 
 | Metric        | Purpose     |
 | ------------- | ----------- |
@@ -492,21 +417,9 @@ Automation metrics tracked:
 | Flaky Rate    | reliability |
 | Test Duration | performance |
 
-Analytics pipeline:
-
-```
-Test Execution
-     |
-Report Generation
-     |
-Metrics Collector
-     |
-Dashboard (Grafana/PowerBI)
-```
-
 ---
 
-## 22. GitHub Actions CI Pipeline
+## 20. GitHub Actions Pipeline
 
 ```yaml
 name: Playwright Tests
@@ -519,20 +432,13 @@ jobs:
 
     steps:
       - uses: actions/checkout@v3
-
-      - name: Install dependencies
-        run: npm install
-
-      - name: Run tests
-        run: npm run test
-
-      - name: Upload report
-        uses: actions/upload-artifact@v3
+      - run: npm install
+      - run: npm run test
 ```
 
 ---
 
-## 23. Jenkins Pipeline Example
+## 21. Jenkins Pipeline
 
 ```groovy
 pipeline {
@@ -553,12 +459,6 @@ pipeline {
       }
     }
 
-    stage('Report') {
-      steps {
-        sh 'npm run report'
-      }
-    }
-
   }
 
 }
@@ -566,7 +466,128 @@ pipeline {
 
 ---
 
-## 24. Automation Ownership Model
+## 22. Prompt-Based Testing Script Development
+
+AI prompts can generate automation code directly.
+
+### Example Prompt
+
+```
+Generate Playwright + Cucumber automation script
+for login functionality with valid and invalid credentials.
+```
+
+### Generated Step Definition
+
+```ts
+When('user logs in with valid credentials', async function () {
+
+  await loginPage.login("user1", "pass1");
+
+});
+```
+
+### Prompt-Based Generator
+
+```ts
+export async function generateTest(prompt: string): Promise<string> {
+
+  const response = await llm.generate(prompt);
+
+  return response.code;
+
+}
+```
+
+---
+
+## 23. MCP-Based Testing Script Development
+
+MCP allows an AI assistant to **directly interact with the automation framework**.
+
+### Capabilities
+
+- Generate Playwright tests
+- Run tests
+- Analyze failures
+- Update locators
+
+### MCP Architecture
+
+```text
+Developer Prompt
+       |
+       v
+LLM Assistant
+       |
+       v
+MCP Server
+       |
++------+-------+----------+
+| Playwright | Git | Reports |
+```
+
+### MCP Test Generation Script
+
+```ts
+import { exec } from "child_process";
+import { promisify } from "util";
+
+const execAsync = promisify(exec);
+
+export async function runTests(): Promise<void> {
+
+  await execAsync("npx playwright test");
+
+}
+```
+
+### MCP Prompt Example
+
+```
+Generate Playwright test for checkout flow
+and run it against staging environment.
+```
+
+Agent actions:
+
+1. Generate feature file
+2. Generate step definitions
+3. Execute tests
+4. Analyze results
+
+---
+
+## 24. AI Locator Self-Healing
+
+When a locator fails, the AI agent:
+
+1. Inspects the DOM
+2. Suggests a new locator
+3. Updates the page object
+
+### Example Replacement
+
+```ts
+page.getByRole('button', { name: 'Login' })
+```
+
+---
+
+## 25. Framework Scaling Strategy (10,000+ Tests)
+
+Scaling methods:
+
+- Distributed CI runners
+- Component Object Model
+- Parallel execution
+- Test sharding
+- Smart locator strategy
+- AI-assisted maintenance
+
+---
+
+## 26. Automation Ownership Model
 
 | Module         | Owner     |
 | -------------- | --------- |
@@ -574,64 +595,42 @@ pipeline {
 | Checkout       | QA Team B |
 | Payments       | QA Team C |
 
-Responsibilities:
-
-- Maintain tests
-- Fix flaky cases
-- Review pull requests
-
 ---
 
-## 25. Maintenance Guidelines
-
-Best practices:
+## 27. Maintenance Guidelines
 
 - Update locators when UI changes
-- Review flaky tests weekly
-- Remove obsolete tests
-- Maintain reusable components
+- Remove flaky tests
+- Reuse components
+- Review automation weekly
 
 ---
 
-## 26. Onboarding Guide
+## 28. Onboarding Guide
 
 Steps for new QA engineers:
 
 1. Clone repository
 2. Install dependencies
 3. Run sample tests
-4. Understand POM design
-5. Review Excel data engine
-6. Implement new scenarios
+4. Review POM design
+5. Understand test data engine
+6. Implement new features
 
 ---
 
-## 27. Framework Scaling Strategy (10,000+ Tests)
+## 29. Conclusion
 
-Scaling methods:
+This framework provides:
 
-- Parallel execution
-- Distributed CI runners
-- Test sharding
-- Reusable components
-- Smart locator strategy
-- Data-driven scenarios
+- **SRS → Test Case → Automation traceability**
+- **Playwright enterprise architecture**
+- **AI prompt-based automation**
+- **MCP-based test development**
+- **CI/CD integration**
+- **Scalability to 10,000+ tests**
 
-Architecture supports **large test suites with thousands of automated scenarios**.
-
----
-
-## 28. Conclusion
-
-This enterprise framework enables:
-
-- Traceability from **SRS → test cases → automation**
-- Scalable automation architecture
-- Deterministic CI pipelines
-- Maintainable UI test design
-- Support for **10,000+ automated tests**
-
-It represents a **production-grade automation platform suitable for large engineering organizations**.
+It represents a **modern AI-enabled enterprise QA automation platform**.
 
 ---
 
