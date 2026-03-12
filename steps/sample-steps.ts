@@ -9,14 +9,14 @@ const { Given, When, Then } = createBdd();
  * Delete this file once you have your own steps
  */
 
-// Given('sample step', async ({ page }) => {
-//     // Implement your step logic here
-// });
+Given('[some precondition]', async ({}) => {
+  // Replace with your actual precondition logic
+});
 
-// When('sample action', async ({ page }) => {
-//     // Implement your action logic here
-// });
+When('[some action]', async ({}) => {
+  // Replace with your actual action logic
+});
 
-// Then('sample verification', async ({ page }) => {
-//     // Implement your verification logic here
-// });
+Then('[expected result]', async ({}) => {
+  // Replace with your actual assertion logic
+});

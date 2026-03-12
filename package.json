@@ -4,7 +4,7 @@
   "description": "Reusable Playwright BDD Test Automation Framework",
   "main": "index.js",
   "scripts": {
-    "test": "playwright test",
+    "test": "bddgen && playwright test",
     "allure:generate": "allure generate allure-results --clean -o allure-report",
     "allure:open": "allure open allure-report"
   },
@@ -28,6 +28,7 @@
     "playwright-bdd": "^8.4.1"
   },
   "dependencies": {
+    "pg": "^8.20.0",
     "playwright": "^1.54.2",
     "xlsx": "^0.18.5"
   }
