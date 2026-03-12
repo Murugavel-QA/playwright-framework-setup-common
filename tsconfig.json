@@ -11,11 +11,25 @@
     "moduleResolution": "node",
     "outDir": "./dist",
     "rootDir": "./",
+    "baseUrl": ".",
+    "paths": {
+      "@pages/*": ["pages/*"],
+      "@steps/*": ["steps/*"],
+      "@data/*": ["test-data/*"],
+      "@data-utils/*": ["data-utils/*"],
+      "@test-data-excel/*": ["test-data-excel/*"]
+    },
     "types": ["node", "@playwright/test"]
   },
   "include": [
-    "**/*.ts",
-    "features/**/*.feature"
+    "tests",
+    "steps",
+    "pages",
+    "test-data",
+    "data-utils",
+    "test-data-excel",
+    "types",
+    "playwright.config.ts"
   ],
   "exclude": [
     "node_modules",
